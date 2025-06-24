@@ -3,7 +3,7 @@ namespace Ionide.Analyzers
 open System
 open System.Reflection
 open Microsoft.FSharp.Reflection
-open FSharp.Compiler.CodeAnalysis
+open FSharp.Analyzers.SDK
 
 module private ReflectionDelegates =
 
@@ -101,9 +101,9 @@ module LanguageVersionShim =
     /// <summary>Tries to parse out "--langversion:" from OtherOptions if it can't find it, returns defaultLanguageVersion</summary>
     /// <param name="fpo">The FSharpProjectOptions to use</param>
     /// <returns>A LanguageVersionShim from the parsed "--langversion:" or defaultLanguageVersion </returns>
-    let fromFSharpProjectOptions (fpo: FSharpProjectOptions) =
+    let fromAnalyzerProjectOptions (fpo: AnalyzerProjectOptions) =
         fpo.OtherOptions
-        |> Array.tryFind (fun x -> x.StartsWith("--langversion:", StringComparison.Ordinal))
+        |> List.tryFind (fun x -> x.StartsWith("--langversion:", StringComparison.Ordinal))
         |> Option.map (fun x -> x.Split(":")[1])
         |> Option.map (fun x -> LanguageVersionShim(x))
         |> Option.defaultWith (fun () -> defaultLanguageVersion.Value)
